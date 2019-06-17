@@ -64,8 +64,7 @@ class OOP
      */
     public static function PascalCase(string $name): string
     {
-        // Return an empty String if input is an empty String
-        if (empty($name)) {
+        if (!$name) {
             return "";
         }
 
@@ -82,14 +81,11 @@ class OOP
      */
     public static function camelCase(string $name): string
     {
-        // Return an empty String if input is an empty String
-        if (empty($name)) {
+        if (!$name) {
             return "";
         }
 
-        // Convert to PascalCase first and then convert PascalCase to camelCase
-        $pascal = self::pascalCase($name);
-        return sprintf("%s%s", strtolower($pascal[0]), substr($pascal, 1));
+        return lcfirst(self::PascalCase($name));
     }
 
     /**
@@ -99,8 +95,7 @@ class OOP
      */
     public static function snake_case(string $name): string
     {
-        // Return an empty String if input is an empty String
-        if (empty($name)) {
+        if (!$name) {
             return "";
         }
 
