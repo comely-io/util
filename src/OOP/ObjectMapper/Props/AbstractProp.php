@@ -19,6 +19,7 @@ use Comely\Utils\OOP\ObjectMapper\Exception\ObjectMapperException;
 /**
  * Class AbstractProp
  * @package Comely\Utils\OOP\ObjectMapper\Props
+ * @property-read string $name
  */
 abstract class AbstractProp
 {
@@ -43,6 +44,20 @@ abstract class AbstractProp
         $this->dataTypes = [];
         $this->nullable = false;
         $this->skipOnError = false;
+    }
+
+    /**
+     * @param $prop
+     * @return mixed
+     */
+    public function __get($prop)
+    {
+        switch ($prop) {
+            case "name":
+                return $this->$prop;
+        }
+
+        throw new \DomainException('Cannot get value for inaccessible property');
     }
 
     /**
@@ -87,7 +102,7 @@ abstract class AbstractProp
     private function validateValue($value): bool
     {
         try {
-            if (is_null($value) || !$this->nullable) {
+            if (is_null($value) && !$this->nullable) {
                 throw new ObjectMapperException(sprintf('Prop "%s" is not nullable', $this->name));
             }
 
