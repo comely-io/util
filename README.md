@@ -1,6 +1,6 @@
 # Comely Utils
 
-Utilities — Collection of mini-components (Events, Memory, Cipher/Encryption)
+Utilities — Collection of mini-components (Security/Cipher, ObjectMapper, Validator, Helpers, etc...)
 
 ## Prerequisites
 
@@ -17,10 +17,15 @@ Utilities — Collection of mini-components (Events, Memory, Cipher/Encryption)
 ***
 
 ### Security
-
 * Cipher Component (AES-256-CBC encryption via OpenSSL)
 * PRNG
 
 ### Time
 * Time (Helper functions)
-* TimeUnits (Serialize number of seconds to/since to strings)
+* TimeUnits (Serialize number of seconds to/since to strings
+
+### OOP
+* ObjectMapper (Map values from an associative array to an object)
+
+### Validator
+* Data validation
