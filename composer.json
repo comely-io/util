@@ -15,7 +15,7 @@
   "require": {
     "php": "^7.1",
     "ext-openssl": "*",
-    "comely-io/data-types": "^1.0.10"
+    "comely-io/data-types": "^1.0.23"
   },
   "autoload": {
     "psr-4": {

@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Comely\Utils\OOP\ObjectMapper;
 
+use Comely\Utils\OOP\ObjectMapper;
+
 /**
  * Interface ObjectMapperInterface
  * @package Comely\Utils\OOP\ObjectMapper
@@ -21,7 +23,7 @@ namespace Comely\Utils\OOP\ObjectMapper;
 interface ObjectMapperInterface
 {
     /**
-     * @param Properties $props
+     * @param ObjectMapper $objectMapper
      */
-    function objectMapperProps(Properties $props): void;
+    public function objectMapperProps(ObjectMapper $objectMapper): void;
 }
