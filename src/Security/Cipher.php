@@ -132,4 +132,15 @@ class Cipher
 
         return new Binary($hmac);
     }
+
+    /**
+     * @param string $algo
+     * @param string $data
+     * @param int $iterations
+     * @return Binary
+     */
+    public function pbkdf2(string $algo, string $data, int $iterations): Binary
+    {
+        return new Binary(hash_pbkdf2($algo, $data, $this->key->raw(), $iterations, 0, true));
+    }
 }
