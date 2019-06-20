@@ -16,6 +16,9 @@ Utilities — Collection of mini-components (Security/Cipher, ObjectMapper, Vali
 
 ***
 
+### Events
+* Simple Events Register
+
 ### Security
 * Cipher Component (AES-256-CBC encryption via OpenSSL)
 * PRNG
