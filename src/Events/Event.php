@@ -52,6 +52,14 @@ class Event
     }
 
     /**
+     * @return EventsRegister
+     */
+    public function register(): EventsRegister
+    {
+        return $this->register;
+    }
+
+    /**
      * @param callable $callback
      * @return Event
      */
