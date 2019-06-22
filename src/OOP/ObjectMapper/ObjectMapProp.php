@@ -154,6 +154,10 @@ class ObjectMapProp
             try {
                 $value = call_user_func($this->validate, $value);
             } catch (\Exception $e) {
+                if ($e instanceof ObjectMapperException) {
+                    throw $e;
+                }
+
                 if ($this->validateException) {
                     throw $e;
                 }
