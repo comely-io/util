@@ -93,7 +93,8 @@ class StringValidator extends AbstractValidator
      */
     public function lowerCase(): self
     {
-        return $this->encoding ? mb_strtolower($this->value, $this->encoding) : strtolower($this->value);
+        $this->value = $this->encoding ? mb_strtolower($this->value, $this->encoding) : strtolower($this->value);
+        return $this;
     }
 
     /**
@@ -101,7 +102,8 @@ class StringValidator extends AbstractValidator
      */
     public function upperCase(): self
     {
-        return $this->encoding ? mb_strtoupper($this->value, $this->encoding) : strtoupper($this->value);
+        $this->value = $this->encoding ? mb_strtoupper($this->value, $this->encoding) : strtoupper($this->value);
+        return $this;
     }
 
     /**
