@@ -142,6 +142,14 @@ class ObjectMapProp
      */
     private function validatedValue($value)
     {
+        if (is_null($value)) {
+            if (!$this->nullable) {
+                throw new ObjectMapperException(sprintf('Prop "%s" is not nullable', $this->name));
+            }
+
+            return null;
+        }
+
         if ($this->validate) {
             try {
                 $value = call_user_func($this->validate, $value);
@@ -149,17 +157,11 @@ class ObjectMapProp
                 if ($this->validateException) {
                     throw $e;
                 }
+            }
 
+            if (is_null($value)) {
                 throw new ObjectMapperException(sprintf('Invalid value for prop "%s"', $this->name));
             }
-        }
-
-        if (is_null($value)) {
-            if (!$this->nullable) {
-                throw new ObjectMapperException(sprintf('Prop "%s" is not nullable', $this->name));
-            }
-
-            return null;
         }
 
         if ($this->dataTypes) {
