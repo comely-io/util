@@ -38,9 +38,9 @@ abstract class AbstractValidator
     }
 
     /**
-     * @return AbstractValidator
+     * @return $this
      */
-    public function nullable(): self
+    public function nullable()
     {
         $this->nullable = true;
         return $this;
@@ -48,9 +48,9 @@ abstract class AbstractValidator
 
     /**
      * @param array $opts
-     * @return AbstractValidator
+     * @return $this
      */
-    public function inArray(array $opts): self
+    public function inArray(array $opts)
     {
         $this->inArray = $opts;
         return $this;
