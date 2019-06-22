@@ -52,6 +52,8 @@ class StringValidator extends AbstractValidator
         }
 
         $this->len = $lenOrMinLen;
+        $this->minLen = null;
+        $this->maxLen = null;
         return $this;
     }
 
