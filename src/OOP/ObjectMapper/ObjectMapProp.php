@@ -157,10 +157,12 @@ class ObjectMapProp
                 if ($this->validateException) {
                     throw $e;
                 }
+
+                throw new ObjectMapperException(sprintf('Invalid value for prop "%s"', $this->name));
             }
 
             if (is_null($value)) {
-                throw new ObjectMapperException(sprintf('Invalid value for prop "%s"', $this->name));
+                throw new ObjectMapperException(sprintf('NULL value for prop "%s"', $this->name));
             }
         }
 
