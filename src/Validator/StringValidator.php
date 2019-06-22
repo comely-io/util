@@ -89,6 +89,22 @@ class StringValidator extends AbstractValidator
     }
 
     /**
+     * @return StringValidator
+     */
+    public function lowerCase(): self
+    {
+        return $this->encoding ? mb_strtolower($this->value, $this->encoding) : strtolower($this->value);
+    }
+
+    /**
+     * @return StringValidator
+     */
+    public function upperCase(): self
+    {
+        return $this->encoding ? mb_strtoupper($this->value, $this->encoding) : strtoupper($this->value);
+    }
+
+    /**
      * @param callable|null $customValidator
      * @return string|null
      * @throws InvalidTypeException
