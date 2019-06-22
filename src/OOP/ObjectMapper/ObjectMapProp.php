@@ -19,6 +19,10 @@ use Comely\Utils\OOP\ObjectMapper\Exception\ObjectMapperException;
 /**
  * Class ObjectMapProp
  * @package Comely\Utils\OOP\ObjectMapper
+ * @property-read string $name
+ * @property-read bool $skipOnError
+ * @property-read bool $nullable
+ * @method getValidatedValue($arg)
  */
 class ObjectMapProp
 {
@@ -57,6 +61,7 @@ class ObjectMapProp
     {
         switch ($prop) {
             case "name":
+            case "skipOnError":
                 return $this->$prop;
         }
 
@@ -131,54 +136,44 @@ class ObjectMapProp
 
     /**
      * @param $value
-     * @return bool|null
+     * @return mixed|null
+     * @throws ObjectMapperException
      * @throws \Exception
      */
     private function validatedValue($value)
     {
-        try {
-            if (is_null($value)) {
-                if (!$this->nullable) {
-                    throw new ObjectMapperException(sprintf('Prop "%s" is not nullable', $this->name));
+        if ($this->validate) {
+            try {
+                $value = call_user_func($this->validate, $value);
+            } catch (\Exception $e) {
+                if ($this->validateException) {
+                    throw $e;
                 }
 
-                return null;
+                throw new ObjectMapperException(sprintf('Invalid value for prop "%s"', $this->name));
             }
-
-            if ($this->validate) {
-                try {
-                    $validated = call_user_func($this->validate, $value);
-                } catch (\Exception $e) {
-                    if ($this->validateException) {
-                        throw $e;
-                    }
-                }
-
-                if (!isset($validated)) {
-                    throw new ObjectMapperException(sprintf('Invalid value for prop "%s"', $this->name));
-                }
-            }
-
-            if ($this->dataTypes) {
-                if (!in_array(gettype($value), $this->dataTypes)) {
-                    $expectedTypes = array_map(function ($type) {
-                        return sprintf('"%s"', $type);
-                    }, $this->dataTypes);
-
-                    throw new ObjectMapperException(
-                        sprintf('Value for prop "%s" must be of type [%s], got "%s"', $this->name, implode(",", $expectedTypes), gettype($value))
-                    );
-                }
-            }
-
-        } catch (\Exception $e) {
-            if (!$this->skipOnError) {
-                throw $e;
-            }
-
-            return false;
         }
 
-        return true;
+        if (is_null($value)) {
+            if (!$this->nullable) {
+                throw new ObjectMapperException(sprintf('Prop "%s" is not nullable', $this->name));
+            }
+
+            return null;
+        }
+
+        if ($this->dataTypes) {
+            if (!in_array(gettype($value), $this->dataTypes)) {
+                $expectedTypes = array_map(function ($type) {
+                    return sprintf('"%s"', $type);
+                }, $this->dataTypes);
+
+                throw new ObjectMapperException(
+                    sprintf('Value for prop "%s" must be of type [%s], got "%s"', $this->name, implode(",", $expectedTypes), gettype($value))
+                );
+            }
+        }
+
+        return $value;
     }
 }

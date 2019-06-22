@@ -107,6 +107,7 @@ class ObjectMapper
      * @param array $data
      * @return ObjectMapperInterface
      * @throws ObjectMapperException
+     * @throws \Exception
      */
     public function map(array $data): ObjectMapperInterface
     {
@@ -157,6 +158,7 @@ class ObjectMapper
     /**
      * @param \ReflectionProperty $prop
      * @param $value
+     * @throws \Exception
      */
     private function setPropValue(\ReflectionProperty $prop, $value): void
     {
@@ -164,15 +166,20 @@ class ObjectMapper
             return; //Ignore dynamically declared props
         }
 
-        $set = true;
+        /** @var ObjectMapProp $propDomain */
         $propDomain = $this->props[$prop->getName()] ?? null;
         if ($propDomain) {
-            $set = call_user_func([$propDomain, "getValidatedValue"], $value);
-        }
+            try {
+                $value = call_user_func([$propDomain, "getValidatedValue"], $value);
+                $prop->setAccessible(true);
+                $prop->setValue($this->obj, $value);
+            } catch (\Exception $e) {
+                if ($propDomain->skipOnError) {
+                    return;
+                }
 
-        if ($set) {
-            $prop->setAccessible(true);
-            $prop->setValue($this->obj, $value);
+                throw $e;
+            }
         }
     }
 
