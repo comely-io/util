@@ -22,6 +22,7 @@ Utilities — Collection of mini-components (Security/Cipher, ObjectMapper, Vali
 ### Security
 * Cipher Component (AES-256-CBC encryption via OpenSSL)
 * PRNG
+* Passwords (Generate, Strength check, Hash)
 
 ### Time
 * Time (Helper functions)
