@@ -66,7 +66,7 @@ class Encrypted implements \Serializable
      */
     public function unserialize($serialized)
     {
-        $typeLen = substr($serialized, 0, 1);
+        $typeLen = intval(substr($serialized, 0, 1));
         $this->type = substr($serialized, 1, $typeLen);
         $this->data = substr($serialized, $typeLen + 1);
         if ($this->type === false || $this->data === false) {
