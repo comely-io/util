@@ -18,6 +18,7 @@ use Comely\DataTypes\Integers;
 use Comely\Utils\Validator\Exception\InvalidTypeException;
 use Comely\Utils\Validator\Exception\NotInArrayException;
 use Comely\Utils\Validator\Exception\RangeException;
+use Comely\Utils\Validator\Exception\SignedIntegerException;
 
 /**
  * Class IntValidator
@@ -29,6 +30,8 @@ class IntValidator extends AbstractValidator
     private $rangeFrom;
     /** @var null|int */
     private $rangeTo;
+    /** @var null|bool */
+    private $unSigned;
 
     /**
      * @param int $min
@@ -43,11 +46,21 @@ class IntValidator extends AbstractValidator
     }
 
     /**
+     * @return IntValidator
+     */
+    public function unSigned(): self
+    {
+        $this->unSigned = true;
+        return $this;
+    }
+
+    /**
      * @param callable|null $customValidator
      * @return int|null
      * @throws InvalidTypeException
      * @throws NotInArrayException
      * @throws RangeException
+     * @throws SignedIntegerException
      */
     public function validate(?callable $customValidator = null): ?int
     {
@@ -66,6 +79,12 @@ class IntValidator extends AbstractValidator
 
         if (!is_int($value)) {
             throw new InvalidTypeException();
+        }
+
+        if (is_bool($this->unSigned)) {
+            if ($value < 0) {
+                throw new SignedIntegerException();
+            }
         }
 
         if ($this->rangeFrom && $this->rangeTo) {
