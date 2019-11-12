@@ -86,6 +86,17 @@ class Cipher
     }
 
     /**
+     * @param string $deterministicPhrase
+     * @param int $iterations
+     * @return Cipher
+     * @throws CipherException
+     */
+    public function remix(string $deterministicPhrase, int $iterations = 1): self
+    {
+        return new self($this->pbkdf2("sha256", $deterministicPhrase, $iterations));
+    }
+
+    /**
      * @param $data
      * @return Binary
      * @throws CipherException
