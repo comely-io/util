@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -21,7 +21,7 @@ namespace Comely\Utils;
 class Utils
 {
     /** string Version (Major.Minor.Release-Suffix) */
-    public const VERSION = "1.2.10";
+    public const VERSION = "0.1.0";
     /** int Version (Major * 10000 + Minor * 100 + Release) */
-    public const VERSION_ID = 10210;
+    public const VERSION_ID = 100;
 }
