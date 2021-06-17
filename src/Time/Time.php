@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *

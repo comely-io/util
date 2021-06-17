@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -24,9 +24,9 @@ use Comely\Utils\Time\TimeUnits\UnitsLabels;
 class TimeUnits
 {
     /** @var UnitsLabels */
-    private $labels;
+    private UnitsLabels $labels;
     /** @var bool */
-    private $rtl;
+    private bool $rtl;
 
     /**
      * TimeUnits constructor.

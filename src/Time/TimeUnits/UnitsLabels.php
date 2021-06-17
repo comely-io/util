@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -21,21 +21,21 @@ namespace Comely\Utils\Time\TimeUnits;
 class UnitsLabels
 {
     /** @var string */
-    private $second;
+    private string $second;
     /** @var string */
-    private $seconds;
+    private string $seconds;
     /** @var string */
-    private $minute;
+    private string $minute;
     /** @var string */
-    private $minutes;
+    private string $minutes;
     /** @var string */
-    private $hour;
+    private string $hour;
     /** @var string */
-    private $hours;
+    private string $hours;
     /** @var string */
-    private $day;
+    private string $day;
     /** @var string */
-    private $days;
+    private string $days;
 
     /**
      * UnitsLabels constructor.
@@ -103,22 +103,13 @@ class UnitsLabels
      */
     public function get(string $which, int $num): string
     {
-        switch ($which) {
-            case "day":
-            case "days":
-                return $num > 1 ? $this->days : $this->day;
-            case "hour":
-            case "hours":
-                return $num > 1 ? $this->hours : $this->hour;
-            case "minute":
-            case "minutes":
-                return $num > 1 ? $this->minutes : $this->minute;
-            case "second":
-            case "seconds":
-                return $num > 1 ? $this->seconds : $this->second;
-            default:
-                throw new \OutOfBoundsException('Invalid label identifier');
-        }
+        return match ($which) {
+            "day", "days" => $num > 1 ? $this->days : $this->day,
+            "hour", "hours" => $num > 1 ? $this->hours : $this->hour,
+            "minute", "minutes" => $num > 1 ? $this->minutes : $this->minute,
+            "second", "seconds" => $num > 1 ? $this->seconds : $this->second,
+            default => throw new \OutOfBoundsException('Invalid label identifier'),
+        };
     }
 
     /**

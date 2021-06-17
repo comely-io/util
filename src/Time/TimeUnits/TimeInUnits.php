@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -21,11 +21,11 @@ namespace Comely\Utils\Time\TimeUnits;
 class TimeInUnits
 {
     /** @var int */
-    public $days;
+    public int $days = 0;
     /** @var int */
-    public $hours;
+    public int $hours = 0;
     /** @var int */
-    public $minutes;
+    public int $minutes = 0;
     /** @var int */
-    public $seconds;
+    public int $seconds = 0;
 }
