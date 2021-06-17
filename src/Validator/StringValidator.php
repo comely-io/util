@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -14,11 +14,7 @@ declare(strict_types=1);
 
 namespace Comely\Utils\Validator;
 
-use Comely\DataTypes\Integers;
-use Comely\Utils\Validator\Exception\InvalidTypeException;
-use Comely\Utils\Validator\Exception\InvalidValueException;
-use Comely\Utils\Validator\Exception\LengthException;
-use Comely\Utils\Validator\Exception\NotInArrayException;
+use Comely\Utils\Validator\Exception\ValidatorException;
 
 /**
  * Class StringValidator
@@ -26,141 +22,151 @@ use Comely\Utils\Validator\Exception\NotInArrayException;
  */
 class StringValidator extends AbstractValidator
 {
-    /** @var null|string */
-    private $encoding;
+    /** @var int */
+    private const CHANGE_CASE_LC = 0x01;
+    /** @var int */
+    private const CHANGE_CASE_UC = 0x02;
+
+    /** @var array|null */
+    private ?array $enum = null;
     /** @var null|int */
-    private $len;
-    /** @var null|int */
-    private $minLen;
-    /** @var null|int */
-    private $maxLen;
-    /** @var null|string */
-    private $pattern;
+    private ?int $exactLen = null;
+    /** @var int|null */
+    private ?int $minLen = null;
+    /** @var int|null */
+    private ?int $maxLen = null;
+    /** @var string|null */
+    private ?string $matchExp = null;
+    /** @var int|null */
+    private ?int $changeCase = null;
 
     /**
-     * @param int $lenOrMinLen
-     * @param int|null $maxLen
-     * @return StringValidator
+     * @param int|null $exact
+     * @param int|null $min
+     * @param int|null $max
+     * @return $this
      */
-    public function len(int $lenOrMinLen, ?int $maxLen = null): self
+    public function len(?int $exact = null, ?int $min = null, ?int $max = null): static
     {
-        if ($maxLen > 0) {
-            $this->len = null;
-            $this->minLen = $lenOrMinLen;
-            $this->maxLen = $maxLen;
+        if ($exact > 0) {
+            $this->exactLen = $exact;
+            $this->minLen = null;
+            $this->maxLen = null;
             return $this;
         }
 
-        $this->len = $lenOrMinLen;
-        $this->minLen = null;
-        $this->maxLen = null;
+        $this->exactLen = null;
+        $this->minLen = $min > 0 ? $min : null;
+        $this->maxLen = $max > 0 ? $max : null;
         return $this;
     }
 
     /**
-     * @param string $pattern
-     * @return StringValidator
+     * @param string $regexExp
+     * @return $this
      */
-    public function match(string $pattern): self
+    public function match(string $regexExp): static
     {
-        $this->pattern = $pattern;
+        $this->matchExp = $regexExp;
         return $this;
     }
 
     /**
-     * @param string $encoding
-     * @return StringValidator
+     * @param string ...$opts
+     * @return $this
      */
-    public function mb(string $encoding): self
+    public function enum(string ...$opts): static
     {
-        if (!in_array($encoding, mb_list_encodings())) {
-            throw new \OutOfBoundsException('Invalid multi-byte encoding');
-        }
-
-        $this->encoding = $encoding;
+        $this->enum = $opts;
         return $this;
     }
 
     /**
-     * @param string $encoding
-     * @return StringValidator
+     * @return $this
      */
-    public function multiByte(string $encoding): self
+    public function lowerCase(): static
     {
-        return $this->mb($encoding);
-    }
-
-    /**
-     * @return StringValidator
-     */
-    public function lowerCase(): self
-    {
-        $this->value = $this->encoding ? mb_strtolower($this->value, $this->encoding) : strtolower($this->value);
+        $this->changeCase = self::CHANGE_CASE_LC;
         return $this;
     }
 
     /**
-     * @return StringValidator
+     * @return $this
      */
-    public function upperCase(): self
+    public function upperCase(): static
     {
-        $this->value = $this->encoding ? mb_strtoupper($this->value, $this->encoding) : strtoupper($this->value);
+        $this->changeCase = self::CHANGE_CASE_UC;
         return $this;
     }
 
     /**
-     * @param callable|null $customValidator
+     * @param mixed $value
+     * @param false $emptyStrIsNull
      * @return string|null
-     * @throws InvalidTypeException
-     * @throws InvalidValueException
-     * @throws LengthException
-     * @throws NotInArrayException
+     * @throws ValidatorException
      */
-    public function validate(?callable $customValidator = null): ?string
+    public function getNullable(mixed $value, bool $emptyStrIsNull = false): ?string
     {
-        $value = $this->value;
-        if (!$value && $this->nullable) {
+        if (is_null($value) || ($emptyStrIsNull && is_string($value) && !$value)) {
             return null;
         }
 
+        return $this->getValidated($value);
+    }
+
+    /**
+     * @param mixed $value
+     * @return string
+     * @throws ValidatorException
+     */
+    public function getValidated(mixed $value): string
+    {
         // Type
         if (!is_string($value)) {
-            throw new InvalidTypeException();
+            throw new ValidatorException(code: Validator::INVALID_TYPE_ERROR);
         }
 
         // Check length
-        if ($this->len || $this->minLen) {
-            $len = $this->encoding ? mb_strlen($value, $this->encoding) : strlen($value);
-            if ($this->len && $this->len !== $len) {
-                throw new LengthException();
+        if ($this->exactLen) {
+            if (strlen($value) !== $this->exactLen) {
+                throw new ValidatorException(code: Validator::LENGTH_ERROR);
+            }
+        } elseif ($this->minLen || $this->maxLen) {
+            $len = strlen($value);
+            if ($this->minLen && $len < $this->minLen) {
+                throw new ValidatorException(code: Validator::LENGTH_UNDERFLOW_ERROR);
             }
 
-            if ($this->minLen && $this->maxLen) {
-                if (!Integers::Range($len, $this->minLen, $this->maxLen)) {
-                    throw new LengthException();
-                }
+            if ($this->maxLen && $len > $this->maxLen) {
+                throw new ValidatorException(code: Validator::LENGTH_OVERFLOW_ERROR);
             }
+        }
+
+        // Change Case
+        if ($this->changeCase) {
+            $value = match ($this->changeCase) {
+                self::CHANGE_CASE_UC => strtoupper($value),
+                default => strtolower($value)
+            };
         }
 
         // PREG pattern match
-        if ($this->pattern) {
-            if (!preg_match($this->pattern, $value)) {
-                throw new InvalidValueException();
-            }
+        if ($this->matchExp && !preg_match($this->matchExp, $value)) {
+            throw new ValidatorException(code: Validator::REGEX_MATCH_ERROR);
         }
 
         // Check if is in defined Array
-        if ($this->inArray) {
-            if (!in_array($value, $this->inArray)) {
-                throw new NotInArrayException();
+        if ($this->enum) {
+            if (!in_array($value, $this->enum)) {
+                throw new ValidatorException(code: Validator::ENUM_ERROR);
             }
         }
 
         // Custom validator
-        if ($customValidator) {
-            $value = call_user_func($customValidator, $value);
+        if ($this->customValidator) {
+            $value = call_user_func($this->customValidator, $value);
             if (!is_string($value)) {
-                throw new \UnexpectedValueException('String validator callback must return a string value');
+                throw new ValidatorException(code: Validator::CALLBACK_TYPE_ERROR);
             }
         }
 

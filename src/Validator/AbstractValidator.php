@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -20,45 +20,25 @@ namespace Comely\Utils\Validator;
  */
 abstract class AbstractValidator
 {
-    /** @var mixed */
-    protected $value;
-    /** @var bool */
-    protected $nullable;
-    /** @var null|array */
-    protected $inArray;
+    /** @var \Closure|null */
+    protected ?\Closure $customValidator = null;
 
     /**
-     * AbstractValidator constructor.
-     * @param $value
+     * @param \Closure $customValidatorFn
+     * @return $this
      */
-    public function __construct($value)
+    public function setCustomFn(\Closure $customValidatorFn): static
     {
-        $this->value = $value;
-        $this->nullable = false;
+        $this->customValidator = $customValidatorFn;
+        return $this;
     }
 
     /**
      * @return $this
      */
-    public function nullable()
+    public function clearCustomFn(): static
     {
-        $this->nullable = true;
+        $this->customValidator = null;
         return $this;
     }
-
-    /**
-     * @param array $opts
-     * @return $this
-     */
-    public function inArray(array $opts)
-    {
-        $this->inArray = $opts;
-        return $this;
-    }
-
-    /**
-     * @param callable|null $customValidator
-     * @return mixed
-     */
-    abstract public function validate(?callable $customValidator = null);
 }

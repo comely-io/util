@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace Comely\Utils\Validator\Exception;
 
 /**
- * Class InvalidTypeException
+ * Class ValidatorException
  * @package Comely\Utils\Validator\Exception
  */
-class InvalidTypeException extends ValidationException
+class ValidatorException extends \Exception
 {
 }
