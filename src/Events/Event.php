@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -21,11 +21,11 @@ namespace Comely\Utils\Events;
 class Event
 {
     /** @var EventsRegister */
-    private $register;
+    private EventsRegister $register;
     /** @var string */
-    private $name;
+    private string $name;
     /** @var array */
-    private $listeners;
+    private array $listeners;
 
     /**
      * Event constructor.
@@ -34,10 +34,6 @@ class Event
      */
     public function __construct(EventsRegister $register, string $name)
     {
-        if (!preg_match('/^[\w\-\.]+$/', $name)) {
-            throw new \InvalidArgumentException('Invalid event name');
-        }
-
         $this->register = $register;
         $this->name = $name;
         $this->listeners = [];

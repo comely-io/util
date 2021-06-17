@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -21,7 +21,7 @@ namespace Comely\Utils\Events;
 class EventsRegister
 {
     /** @var array */
-    private $events;
+    private array $events;
 
     /**
      * EventsRegister constructor.

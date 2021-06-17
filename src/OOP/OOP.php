@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/utils" package.
  * https://github.com/comely-io/utils
  *
@@ -26,7 +26,7 @@ class OOP
      */
     public static function isValidClass($val): bool
     {
-        return self::isValidClassName($val) && class_exists($val) ? true : false;
+        return self::isValidClassName($val) && class_exists($val);
     }
 
     /**
