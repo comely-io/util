@@ -26,6 +26,12 @@ class StringValidator extends AbstractValidator
     private const CHANGE_CASE_LC = 0x01;
     /** @var int */
     private const CHANGE_CASE_UC = 0x02;
+    /** @var int */
+    private const TRIM_BOTH = 0x0a;
+    /** @var int */
+    private const TRIM_LEFT = 0x0b;
+    /** @var int */
+    private const TRIM_RIGHT = 0x0c;
 
     /** @var array|null */
     private ?array $enum = null;
@@ -39,6 +45,10 @@ class StringValidator extends AbstractValidator
     private ?string $matchExp = null;
     /** @var int|null */
     private ?int $changeCase = null;
+    /** @var int|null */
+    private ?int $trim = null;
+    /** @var string */
+    private string $trimChars = " \n\r\t\v\0";
 
     /**
      * @param int|null $exact
@@ -58,6 +68,38 @@ class StringValidator extends AbstractValidator
         $this->exactLen = null;
         $this->minLen = $min > 0 ? $min : null;
         $this->maxLen = $max > 0 ? $max : null;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function trim(string $chars = " \n\r\t\v\0"): static
+    {
+        $this->trim = self::TRIM_BOTH;
+        $this->trimChars = $chars;
+        return $this;
+    }
+
+    /**
+     * @param string $chars
+     * @return $this
+     */
+    public function ltrim(string $chars = " \n\r\t\v\0"): static
+    {
+        $this->trim = self::TRIM_LEFT;
+        $this->trimChars = $chars;
+        return $this;
+    }
+
+    /**
+     * @param string $chars
+     * @return $this
+     */
+    public function rtrim(string $chars = " \n\r\t\v\0"): static
+    {
+        $this->trim = self::TRIM_RIGHT;
+        $this->trimChars = $chars;
         return $this;
     }
 
@@ -115,6 +157,15 @@ class StringValidator extends AbstractValidator
     }
 
     /**
+     * @param string $value
+     * @return string
+     */
+    protected function typeValidation(string $value): string
+    {
+        return $value;
+    }
+
+    /**
      * @param mixed $value
      * @return string
      * @throws ValidatorException
@@ -125,6 +176,26 @@ class StringValidator extends AbstractValidator
         if (!is_string($value)) {
             throw new ValidatorException(code: Validator::INVALID_TYPE_ERROR);
         }
+
+        // Trim values?
+        if ($this->trim) {
+            $value = match ($this->trim) {
+                self::TRIM_RIGHT => rtrim($value, $this->trimChars),
+                self::TRIM_LEFT => ltrim($value, $this->trimChars),
+                default => trim($value, $this->trimChars)
+            };
+        }
+
+        // Change Case
+        if ($this->changeCase) {
+            $value = match ($this->changeCase) {
+                self::CHANGE_CASE_UC => strtoupper($value),
+                default => strtolower($value)
+            };
+        }
+
+        // Sub-type validations
+        $value = $this->typeValidation($value);
 
         // Check length
         if ($this->exactLen) {
@@ -140,14 +211,6 @@ class StringValidator extends AbstractValidator
             if ($this->maxLen && $len > $this->maxLen) {
                 throw new ValidatorException(code: Validator::LENGTH_OVERFLOW_ERROR);
             }
-        }
-
-        // Change Case
-        if ($this->changeCase) {
-            $value = match ($this->changeCase) {
-                self::CHANGE_CASE_UC => strtoupper($value),
-                default => strtolower($value)
-            };
         }
 
         // PREG pattern match
