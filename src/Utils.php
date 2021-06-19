@@ -21,7 +21,7 @@ namespace Comely\Utils;
 class Utils
 {
     /** string Version (Major.Minor.Release-Suffix) */
-    public const VERSION = "0.1.0";
+    public const VERSION = "2.0.0";
     /** int Version (Major * 10000 + Minor * 100 + Release) */
-    public const VERSION_ID = 100;
+    public const VERSION_ID = 20000;
 }
