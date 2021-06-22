@@ -39,6 +39,55 @@ class ASCII
     }
 
     /**
+     * @param string $value
+     * @param string|null $allowLowChars
+     * @param string|null $stripChars
+     * @return string
+     */
+    public static function Filter(string $value, ?string $allowLowChars = null, ?string $stripChars = null): string
+    {
+        $clean = filter_var($value, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_HIGH); // Remove all chars > 127
+        $allowed = [];
+        if ($allowLowChars) {
+            $allowLen = strlen($allowLowChars);
+            for ($i = 0; $i < $allowLen; $i++) {
+                $allowed[] = ord($allowLowChars[$i]);
+            }
+        }
+
+        $stripped = [];
+        if ($stripChars) {
+            $stripLen = strlen($stripChars);
+            for ($i = 0; $i < $stripLen; $i++) {
+                $stripped[] = ord($stripChars[$i]);
+            }
+        }
+
+        $len = strlen($clean);
+        if (!$len) {
+            return "";
+        }
+
+        $filtered = "";
+        for ($i = 0; $i < $len; $i++) {
+            $ord = ord($clean[$i]);
+            if ($ord < 32) {
+                if (!in_array($ord, $allowed)) {
+                    continue;
+                }
+            }
+
+            if (in_array($ord, $stripped)) {
+                continue;
+            }
+
+            $filtered .= chr($ord);
+        }
+
+        return $filtered;
+    }
+
+    /**
      * @param string $str
      * @return string
      */
