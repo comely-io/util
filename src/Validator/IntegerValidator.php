@@ -94,7 +94,7 @@ class IntegerValidator extends AbstractValidator
     public function getValidated(mixed $value): int
     {
         if (is_string($value)) {
-            if (!preg_match('/^-?[1-9][0-9]*$/', $value)) {
+            if (!preg_match('/^(0|-?[1-9][0-9]*)$/', $value)) {
                 throw new ValidatorException(code: Validator::INVALID_TYPE_ERROR);
             }
 
