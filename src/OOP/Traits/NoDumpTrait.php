@@ -15,11 +15,13 @@ declare(strict_types=1);
 namespace Comely\Utils\OOP\Traits;
 
 /**
- * Trait NoDumpTrait
- * @package Comely\Utils\OOP\Traits
+ * Prevent var_dump of implementing classes
  */
 trait NoDumpTrait
 {
+    /**
+     * @return array
+     */
     public function __debugInfo(): array
     {
         return [get_called_class()];

@@ -15,13 +15,15 @@ declare(strict_types=1);
 namespace Comely\Utils\OOP\Traits;
 
 /**
- * Trait NotCloneableTrait
- * @package Comely\Utils\OOP\Traits
+ * Prevents implementing classes/objects from being cloned
  */
 trait NotCloneableTrait
 {
+    /**
+     * Throws \RuntimeException preventing the clone
+     */
     final public function __clone(): void
     {
-        throw new \BadMethodCallException(sprintf('Instance of class "%s" cannot be clone', get_called_class()));
+        throw new \BadMethodCallException(get_called_class() . ' instance cannot be cloned');
     }
 }

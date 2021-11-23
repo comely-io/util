@@ -15,39 +15,38 @@ declare(strict_types=1);
 namespace Comely\Utils\OOP\Traits;
 
 /**
- * Trait NotSerializableTrait
- * @package Comely\Utils\OOP\Traits
+ * Prevents implementing classes/objects from being serialized
  */
 trait NotSerializableTrait
 {
     final public function __serialize(): array
     {
-        throw new \BadMethodCallException(sprintf('Instance of class "%s" cannot be serialized', get_called_class()));
+        throw new \BadMethodCallException(get_called_class() . ' instance cannot be serialized');
     }
 
     final public function __unserialize(array $data): void
     {
-        throw new \BadMethodCallException(sprintf('Instance of class "%s" cannot be un-serialized', get_called_class()));
+        throw new \BadMethodCallException(get_called_class() . ' instance cannot be un-serialized');
     }
 
     final public function __sleep(): array
     {
-        throw new \BadMethodCallException(sprintf('Instance of class "%s" cannot be serialized', get_called_class()));
+        throw new \BadMethodCallException(get_called_class() . ' instance cannot be serialized');
     }
 
     final public function __wakeup(): void
     {
-        throw new \BadMethodCallException(sprintf('Instance of class "%s" cannot be un-serialized', get_called_class()));
+        throw new \BadMethodCallException(get_called_class() . ' instance cannot be un-serialized');
     }
 
     final public function serialize(): ?string
     {
-        throw new \BadMethodCallException(sprintf('Instance of class "%s" cannot be serialized', get_called_class()));
+        throw new \BadMethodCallException(get_called_class() . ' instance cannot be serialized');
     }
 
     /** @noinspection PhpUnusedParameterInspection */
     final public function unserialize(string $data): void
     {
-        throw new \BadMethodCallException(sprintf('Instance of class "%s" cannot be serialized', get_called_class()));
+        throw new \BadMethodCallException(get_called_class() . ' instance cannot be un-serialized');
     }
 }
