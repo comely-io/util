@@ -15,7 +15,8 @@
   "require": {
     "php": "^8.0",
     "ext-gmp": "*",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "ext-bcmath": "*"
   },
   "autoload": {
     "psr-4": {

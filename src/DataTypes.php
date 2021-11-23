@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Comely\Utils;
 
+use Comely\Utils\Math\BigInteger;
+use Comely\Utils\Math\BigNumber;
 use Comely\Utils\Validator\Exception\ValidatorException;
 use Comely\Utils\Validator\Validator;
 
@@ -63,12 +65,78 @@ class DataTypes
      * @param $int
      * @return int|null
      */
-    public static function getIntegerValue($int): ?int
+    public static function IntegerValue($int): ?int
     {
         try {
             return Validator::Integer()->getValidated($int);
         } catch (ValidatorException) {
             return null;
         }
+    }
+
+    /**
+     * @param $value
+     * @return string|null
+     */
+    public static function BigIntegerValue($value): ?string
+    {
+        if ($value instanceof BigInteger) {
+            return $value->value();
+        }
+
+        if (is_int($value)) {
+            return strval($value);
+        }
+
+        if (is_string($value) && preg_match('/^(0|-?[1-9][0-9]*)$/', $value)) {
+            return $value;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $value
+     * @return string|null
+     */
+    public static function BigNumberValue($value): ?string
+    {
+        if ($value instanceof BigInteger) {
+            return $value->value();
+        }
+
+        if ($value instanceof BigNumber) {
+            return $value->value();
+        }
+
+        // Integers are obviously valid numbers
+        if (is_int($value)) {
+            return strval($value);
+        }
+
+        // Floats are valid numbers too but must be checked for scientific E-notations
+        if (is_float($value)) {
+            $floatAsString = strval($value);
+            // Look if scientific E-notation
+            if (preg_match('/e-/i', $floatAsString)) {
+                // Auto-detect decimals
+                $decimals = preg_split('/e-/i', $floatAsString);
+                $decimals = strlen($decimals[0]) + intval($decimals[1]);
+                return number_format($value, $decimals, ".", "");
+            } elseif (preg_match('/e\+/i', $floatAsString)) {
+                return number_format($value, 0, "", "");
+            }
+
+            return $floatAsString;
+        }
+
+        // Check with in String
+        if (is_string($value)) {
+            if (preg_match('/^-?(0|[1-9]+[0-9]*)(\.[0-9]+)?$/', $value)) {
+                return $value;
+            }
+        }
+
+        return null;
     }
 }
