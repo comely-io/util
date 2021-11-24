@@ -47,6 +47,8 @@ class StringValidator extends AbstractValidator
     private ?int $changeCase = null;
     /** @var int|null */
     private ?int $trim = null;
+    /** @var bool Clean multiple spaces and tabs with a single space */
+    private bool $cleanSpaces = false;
     /** @var string */
     private string $trimChars = " \n\r\t\v\0";
 
@@ -142,6 +144,15 @@ class StringValidator extends AbstractValidator
     }
 
     /**
+     * @return $this
+     */
+    public function cleanSpaces(): static
+    {
+        $this->cleanSpaces = true;
+        return $this;
+    }
+
+    /**
      * @param mixed $value
      * @param false $emptyStrIsNull
      * @return string|null
@@ -184,6 +195,11 @@ class StringValidator extends AbstractValidator
                 self::TRIM_LEFT => ltrim($value, $this->trimChars),
                 default => trim($value, $this->trimChars)
             };
+        }
+
+        // Clean multi-spaces and tabs with a single space
+        if ($this->cleanSpaces) {
+            $value = preg_replace('/(\s+|\t)/', " ", $value);
         }
 
         // Change Case
