@@ -71,6 +71,14 @@ class Validator
     }
 
     /**
+     * @return UTF8_Validator
+     */
+    public static function UTF8(): UTF8_Validator
+    {
+        return new UTF8_Validator();
+    }
+
+    /**
      * @return IntegerValidator
      */
     public static function Integer(): IntegerValidator
