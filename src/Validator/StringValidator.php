@@ -23,34 +23,34 @@ use Comely\Utils\Validator\Exception\ValidatorException;
 class StringValidator extends AbstractValidator
 {
     /** @var int */
-    private const CHANGE_CASE_LC = 0x01;
+    protected const CHANGE_CASE_LC = 0x01;
     /** @var int */
-    private const CHANGE_CASE_UC = 0x02;
+    protected const CHANGE_CASE_UC = 0x02;
     /** @var int */
-    private const TRIM_BOTH = 0x0a;
+    protected const TRIM_BOTH = 0x0a;
     /** @var int */
-    private const TRIM_LEFT = 0x0b;
+    protected const TRIM_LEFT = 0x0b;
     /** @var int */
-    private const TRIM_RIGHT = 0x0c;
+    protected const TRIM_RIGHT = 0x0c;
 
     /** @var array|null */
-    private ?array $enum = null;
+    protected ?array $enum = null;
     /** @var null|int */
-    private ?int $exactLen = null;
+    protected ?int $exactLen = null;
     /** @var int|null */
-    private ?int $minLen = null;
+    protected ?int $minLen = null;
     /** @var int|null */
-    private ?int $maxLen = null;
+    protected ?int $maxLen = null;
     /** @var string|null */
-    private ?string $matchExp = null;
+    protected ?string $matchExp = null;
     /** @var int|null */
-    private ?int $changeCase = null;
+    protected ?int $changeCase = null;
     /** @var int|null */
-    private ?int $trim = null;
+    protected ?int $trim = null;
     /** @var bool Clean multiple spaces and tabs with a single space */
-    private bool $cleanSpaces = false;
+    protected bool $cleanSpaces = false;
     /** @var string */
-    private string $trimChars = " \n\r\t\v\0";
+    protected string $trimChars = " \n\r\t\v\0";
 
     /**
      * @param int|null $exact

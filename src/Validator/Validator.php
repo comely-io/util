@@ -48,6 +48,8 @@ class Validator
     public const ASCII_CHARSET_ERROR = 0x8c;
     /** @var int String contains non-printable sequence from ASCII charset */
     public const ASCII_PRINTABLE_ERROR = 0x8d;
+    /** @var int String contains chars outside allowed UTF8 charset */
+    public const UTF8_CHARSET_ERROR = 0x8e;
 
     /** @var int Alias of ENUM_ERROR */
     public const NOT_IN_ARRAY_ERROR = self::ENUM_ERROR;
